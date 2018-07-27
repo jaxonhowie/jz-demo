@@ -1,7 +1,9 @@
 package org.jz.controller;
 
 import org.jz.util.ExecuteUtils;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
@@ -25,9 +27,10 @@ public class Html2canvasController implements Filter {
     }
 
     @RequestMapping(value = "/img", method = RequestMethod.POST)
-    public String getImgBASE64(@RequestParam String img){
+    public String getImgBASE64(@RequestParam String img,Model model){
         System.out.println("success :" + img);
-        return img.replaceAll("data:image/jpeg;base64,", "");
+        model.addAttribute("img", img);
+        return "templates/show";
     }
 
     @Override

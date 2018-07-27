@@ -7,5 +7,7 @@ spring:
   resources:
     static-locations: classpath:/static/
   thymeleaf:
-    prefix: classpath:/templates/
+    prefix: classpath:static/templates/
+    suffix: .html
+    cache: false
 
