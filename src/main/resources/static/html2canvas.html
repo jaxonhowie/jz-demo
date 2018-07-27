@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>html to img</title>
+    <script type="text/javascript" src="js/jquery-1.12.0.min.js"></script>
+    <script type="text/javascript" src="js/html2canvas.js"></script>
+    <script type="text/javascript" src="js/canvas2image.js"></script>
+    <script type="text/javascript" src="js/promise-6.1.0.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            convert2canvas();
+        });
+
+        function convert2canvas() {
+
+            var cntElem = document.getElementById('table1');
+            var shareContent = cntElem;//需要截图的包裹的（原生的）DOM 对象
+            var width = shareContent.offsetWidth; //获取dom 宽度
+            var height = shareContent.offsetHeight; //获取dom 高度
+            var canvas = document.createElement("canvas"); //创建一个canvas节点
+            var scale = 2; //定义任意放大倍数 支持小数
+            canvas.width = width * scale; //定义canvas 宽度 * 缩放
+            canvas.height = height * scale; //定义canvas高度 *缩放
+            canvas.getContext("2d").scale(scale, scale); //获取context,设置scale
+            var opts = {
+                scale: scale, // 添加的scale 参数
+                canvas: canvas, //自定义 canvas
+                // logging: true, //日志开关，便于查看html2canvas的内部执行流程
+                width: width, //dom 原始宽度
+                height: height,
+                useCORS: true // 【重要】开启跨域配置
+            };
+
+            html2canvas(shareContent, opts).then(function (canvas) {
+
+                var context = canvas.getContext('2d');
+                // 【重要】关闭抗锯齿
+                context.mozImageSmoothingEnabled = false;
+                context.webkitImageSmoothingEnabled = false;
+                context.msImageSmoothingEnabled = false;
+                context.imageSmoothingEnabled = false;
+
+                // 【重要】默认转化的格式为png,也可设置为其他格式
+                var img = Canvas2Image.convertToJPEG(canvas, canvas.width, canvas.height);
+
+                cntElem.appendChild(img);
+
+                $(img).css({
+                    "width": canvas.width / 2 + "px",
+                    "height": canvas.height / 2 + "px",
+                }).addClass('f-full');
+
+                var json = $('img').attr('src');
+
+                $.ajax({
+                    async: true,
+                    type: 'POST',
+                    url: '/test/img',
+                    data: {img: json},
+                    success: function () {
+                        console.log('callback success');
+                    },
+                    error: function () {
+                        console.log('callback failed');
+                    }
+                });
+
+            });
+
+
+        }
+
+    </script>
+</head>
+<body>
+<div id="outer-box">
+
+        <div class="kkkkkkkk" id="table1">
+
+
+            <table border="1">
+                <tr>
+                    <th>Heading</th>
+                    <th>Another Heading</th>
+                </tr>
+                <tr>
+                    <td>row 1, cell 1</td>
+                    <td>row 1, cell 2</td>
+                </tr>
+                <tr>
+                    <td>row 2, cell 1</td>
+                    <td>row 2, cell 2</td>
+                </tr>
+            </table>
+        </div>
+
+        <style>#autowrite-box {
+            width: 100%;
+            min-width: 320px;
+            margin: 0 auto;
+            padding: 0 2% 2%;
+            background-color: #fff;
+            box-sizing: border-box;
+            color: #333;
+        }
+
+        #autowrite-box ul, #autowrite-box ol, #autowrite-box li {
+            list-style: none;
+        }
+
+        #autowrite-box em, #autowrite-box i {
+            font-style: normal;
+        }
+
+        #autowrite-box a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        #autowrite-box a:hover {
+            text-decoration: none;
+        }
+
+        #autowrite-box h1, #autowrite-box h2, #autowrite-box h3, #autowrite-box h4, #autowrite-box h5 {
+            font-size: 100%;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        #autowrite-box img {
+            -ms-interpolation-mode: bicubic;
+            display: block;
+            border: 0;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        #autowrite-box table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            text-align: center;
+            width: 100% !important;
+            font-size: 1em;
+        }
+
+        #autowrite-box table tr th {
+            background-color: #ffc599;
+        }
+
+        #autowrite-box table tr th, #autowrite-box table tr td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+        }
+
+        #autowrite-box p {
+            margin-bottom: 10px;
+            text-indent: 2em;
+            text-align: justify;
+            line-height: 1.4em;
+        }
+
+        @media (min-width: 320px) {
+            #autowrite-box {
+                font-size: 12px;
+            }
+        }
+
+        @media (min-width: 414px) {
+            #autowrite-box {
+                font-size: 14px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #autowrite-box {
+                font-size: 14px;
+            }
+        }
+
+        @media (min-width: 1000px) {
+            #autowrite-box {
+                font-size: 16px;
+            }
+
+            #autowrite-box .echart-title {
+                font-size: 14px;
+            }
+        }
+
+        #autowrite-box h1 {
+            font-size: 1.5em;
+        }
+
+        #autowrite-box h2 {
+            font-size: 1.25em;
+        }
+
+        #autowrite-box h3 {
+            font-size: 1.125em;
+        }
+
+        #autowrite-box h4 {
+            font-size: 1em;
+        }
+
+        #autowrite-box .title {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        #autowrite-box .section {
+            margin-bottom: 10px;
+        }
+
+        #autowrite-box .mb {
+            margin-bottom: 10px;
+        }
+
+        #autowrite-box .source {
+            color: #999;
+            font-size: 12px;
+            display: block;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #autowrite-box .echart-title {
+            color: #2395f1;
+        }
+
+        #autowrite-box .upred {
+            position: relative;
+            color: red;
+        }
+
+        #autowrite-box .upred em {
+            position: absolute;
+            left: 8px;
+            top: -2px;
+            font-size: 12px;
+        }
+
+        #autowrite-box .downgreen {
+            position: relative;
+            color: green;
+        }
+
+        #autowrite-box .downgreen em {
+            position: absolute;
+            left: 8px;
+            bottom: -5px;
+            font-size: 12px;
+        }</style>
+    </div>
+
+</div>
+
+</body>
+</html>
+
+
